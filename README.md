@@ -41,3 +41,6 @@ $ cargo run
 ```
 
 To create `Cargo.toml`, you can run `cargo init`.
+
+## [2. Programming a Guessing Game](https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html)
+Skip for now.
