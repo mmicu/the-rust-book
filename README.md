@@ -65,3 +65,5 @@ Two data types:
     1. [Arrays](https://doc.rust-lang.org/book/ch03-02-data-types.html#the-array-type).
 
 ### [Functions](snippets/03-common-programming-concepts/functions.rs)
+
+### [Control Flow](snippets/03-common-programming-concepts/control_flow.rs)
