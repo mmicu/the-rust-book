@@ -67,3 +67,33 @@ Two data types:
 ### [Functions](snippets/03-common-programming-concepts/functions.rs)
 
 ### [Control Flow](snippets/03-common-programming-concepts/control_flow.rs)
+
+## [4. Understanding Ownership](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)
+**Ownership** is a **set of rules** that govern how a Rust program manages memory.
+
+### [The Stack and the Heap](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#the-stack-and-the-heap)
+Both the **stack** and the **heap** are parts of memory available to your code to use at runtime,
+but they are structured in a different way.
+
+* **Stack**:
+    * Faster compared to the *heap*
+    * **LIFO**
+    * All data stored must have a known and fixed size
+* **Heap**:
+    * Slower compared to the *stack*
+    * Stores data with unknown size at compile time or size that might change
+    * Less organized
+    * An allocator:
+        * Finds an empty spot in the heap that is big enough
+        * Marks it as in use
+        * Returns a *pointer*, which is the address of that location
+    * Thee *pointer* has a known size, hence it can be stored in the heap
+
+### [Ownership rules](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ownership-rules)
+1. Each value in Rust has an *owner*.
+1. There can only be one *owner* at a time.
+1. When the *owner* goes out of scope, the value will be *dropped*.
+
+### [Variable scope](./snippets/04-ownership/variable_scope.rs)
+
+### [The String type](./snippets/04-ownership/string.rs)
