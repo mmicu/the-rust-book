@@ -97,3 +97,88 @@ but they are structured in a different way.
 ### [Variable scope](./snippets/04-ownership/variable_scope.rs)
 
 ### [The String type](./snippets/04-ownership/string.rs)
+
+### [Memory and Allocation](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#memory-and-allocation)
+For the string literal, we know its content at compile time,
+so the text is hardcoded directly into the final executable.
+
+With the `String` type (mutable&growable), we need to allocate an amount of memory in the heap,
+which is unknown at compile time:
+
+1. Memory must be request at runtime by the memory allocator.
+    - Done by us.
+    - Done by using `String::from`.
+1. Need a way to return this memory to the memory allocator when we are done with the `String`.
+    - "The Rust approach".
+    - Memory is automatically returned once **the variable** that **owns** it goes **out of scope**.
+
+```rust
+{
+    let s = String::from("hey");
+    // Use `s` from here.
+} // Scope is over. `s` is not available anymore.
+```
+
+When a variable goes out of scope, Rust calls a special function for us: **drop** ([RAII in C++](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization)).
+
+#### [Variables and Data Interacting with Move](./snippets/04-ownership/move.rs)
+
+#### [Scope and Assignment](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#scope-and-assignment)
+In addition to calling `drop` after a variable goes out of scope,
+Rust calls the same when you assign a completely new value to an existing variable.
+
+```rust
+let mut s = String::from("hello");
+s = String::from("ahoy");
+
+println!("{s}, world!");
+```
+
+#### [Variables and Data Interacting with Clone](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone)
+We can use `clone` for deep copies (both `stack` and `heap` data):
+
+```rust
+let s1 = String::from("hello");
+let s2 = s1.clone();
+println!("s1 = {s1}, s2 = {s2}");
+```
+
+#### [Stack-Only Data: Copy](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#stack-only-data-copy)
+Why don't we need to call `clone` for the following?
+
+```rust
+let x = 5;
+let y = x;
+
+println!("x = {x}, y = {y}");
+```
+
+The reason is that types such as integers that have a **known size** at compile time are **stored entirely** on the **stack**,
+so **copies** of the actual values are **quick** to make.
+
+Rust has a special annotation called the `Copy` trait that we can place on **types that are stored on the stack**,
+as integers are (TODO: link the Chapter 10).
+
+`Copy` **cannot be used** if the type, or any of its parts, has implemented the `Drop` trait.
+Here are some of the types that implement `Copy`:
+
+* All the `integer` types.
+* The `Boolean` type.
+* All the `floating-point` types.
+* The character type.
+* `Tuples`, if they only contain types that also implement `Copy`.
+
+#### [Ownership and Functions](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ownership-and-functions)
+The mechanics of passing a value to a function are **similar** to those when assigning a value to a variable.
+Passing a variable to a function will `move` or `copy`, just as assignment does.
+
+For more details, check [ownership_functions](./snippets/04-ownership/ownership_functions.rs)
+
+#### [Return Values and Scope](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html)
+Returning values can also transfer ownership.
+
+The ownership of a variable follows the same pattern every time: **Assigning** a value to another variable **moves** it.
+When a variable that includes data on the **heap** goes out of scope,
+the value will be cleaned up by `drop` unless ownership of the data has been moved to another variable.
+
+For more details, check [ownership_functions](./snippets/04-ownership/ownership_return_values.rs)
