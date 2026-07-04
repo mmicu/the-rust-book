@@ -182,3 +182,46 @@ When a variable that includes data on the **heap** goes out of scope,
 the value will be cleaned up by `drop` unless ownership of the data has been moved to another variable.
 
 For more details, check [ownership_functions](./snippets/04-ownership/ownership_return_values.rs)
+
+### [References and Borrowing](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html)
+A reference is like a pointer that it's an address we can follow to access data stored at address.
+**That data is owned by some other variable**.
+Unlike a pointer, a reference is **guaranteed to point** to a valid value.
+
+We call the action of creating a reference **borrowing**.
+
+For more details, check [references_and_borrowing](./snippets/04-ownership/references_and_borrowing.rs)
+
+#### [Mutable References](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#mutable-references)
+Mutable references have **one big restriction**: if you have a mutable reference to a value,
+you can have no other references to that value.
+
+The benefit of having such restriction is that **Rust can prevent data races at compile time**.
+A *data race* is similar to a race condition and happens when these three behaviors occur:
+
+1. Two or more pointers access the same data at the same time.
+1. At least one of the pointer is being used to write to the data.
+1. There's no mechanism being used to synchronize access to the data.
+
+Also, it is **not possible** to have a mutable reference while we have an immutable one to the same value.
+
+However, **multiple immutable references are allowed** (no data modified/written, hence same data remains).
+
+As usual, the scope (in this case the reference's one) plays a crucial role.
+In fact, the following code is valid:
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &s; // no problem
+let r2 = &s; // no problem
+println!("{r1} and {r2}");
+// Variables `r1` and `r2` will not be used after this point.
+
+let r3 = &mut s; // no problem
+println!("{r3}");
+```
+
+#### [The Rules of References](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#the-rules-of-references)
+* At any given time, you can have *either* one mutable reference or any number of immutable references.
+* References must always be valid.
