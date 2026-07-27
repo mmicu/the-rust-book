@@ -71,7 +71,9 @@ Two data types:
 ## [4. Understanding Ownership](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)
 **Ownership** is a **set of rules** that govern how a Rust program manages memory.
 
-### [The Stack and the Heap](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#the-stack-and-the-heap)
+### [What is ownership?](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html)
+
+#### [The Stack and the Heap](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#the-stack-and-the-heap)
 Both the **stack** and the **heap** are parts of memory available to your code to use at runtime,
 but they are structured in a different way.
 
@@ -89,16 +91,16 @@ but they are structured in a different way.
         * Returns a *pointer*, which is the address of that location
     * Thee *pointer* has a known size, hence it can be stored in the heap
 
-### [Ownership rules](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ownership-rules)
+#### [Ownership rules](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ownership-rules)
 1. Each value in Rust has an *owner*.
 1. There can only be one *owner* at a time.
 1. When the *owner* goes out of scope, the value will be *dropped*.
 
-### [Variable scope](./snippets/04-ownership/variable_scope.rs)
+#### [Variable scope](./snippets/04-ownership/variable_scope.rs)
 
-### [The String type](./snippets/04-ownership/string.rs)
+#### [The String type](./snippets/04-ownership/string.rs)
 
-### [Memory and Allocation](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#memory-and-allocation)
+#### [Memory and Allocation](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#memory-and-allocation)
 For the string literal, we know its content at compile time,
 so the text is hardcoded directly into the final executable.
 
@@ -121,9 +123,9 @@ which is unknown at compile time:
 
 When a variable goes out of scope, Rust calls a special function for us: **drop** ([RAII in C++](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization)).
 
-#### [Variables and Data Interacting with Move](./snippets/04-ownership/move.rs)
+##### [Variables and Data Interacting with Move](./snippets/04-ownership/move.rs)
 
-#### [Scope and Assignment](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#scope-and-assignment)
+##### [Scope and Assignment](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#scope-and-assignment)
 In addition to calling `drop` after a variable goes out of scope,
 Rust calls the same when you assign a completely new value to an existing variable.
 
@@ -134,7 +136,7 @@ s = String::from("ahoy");
 println!("{s}, world!");
 ```
 
-#### [Variables and Data Interacting with Clone](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone)
+##### [Variables and Data Interacting with Clone](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone)
 We can use `clone` for deep copies (both `stack` and `heap` data):
 
 ```rust
@@ -143,7 +145,7 @@ let s2 = s1.clone();
 println!("s1 = {s1}, s2 = {s2}");
 ```
 
-#### [Stack-Only Data: Copy](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#stack-only-data-copy)
+##### [Stack-Only Data: Copy](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#stack-only-data-copy)
 Why don't we need to call `clone` for the following?
 
 ```rust
@@ -225,3 +227,15 @@ println!("{r3}");
 #### [The Rules of References](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#the-rules-of-references)
 * At any given time, you can have *either* one mutable reference or any number of immutable references.
 * References must always be valid.
+
+### [The slice type](https://doc.rust-lang.org/book/ch04-03-slices.html)
+**Slices** let you **reference a contiguous sequence of elements** in a collection.
+A slice is a kind of reference, so it does not have ownership.
+
+For more details, check [references_and_borrowing](./snippets/04-ownership/references_and_borrowing.rs)
+
+#### String Slices
+For more details, check [references_and_borrowing](./snippets/04-ownership/string-slices.rs)
+
+> Note: String slice range indices must occur at valid `UTF-8` character boundaries.
+> If you attempt to create a string slice in the middle of a multibyte character, your program will exit with an error.
