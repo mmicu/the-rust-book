@@ -239,3 +239,25 @@ For more details, check [references_and_borrowing](./snippets/04-ownership/strin
 
 > Note: String slice range indices must occur at valid `UTF-8` character boundaries.
 > If you attempt to create a string slice in the middle of a multibyte character, your program will exit with an error.
+
+## [5. Using Structs to Structure Related Data](https://doc.rust-lang.org/book/ch05-00-structs.html)
+A *struct*, or *structure*, is a custom data type that lets you package together and name multiple related values that make up a meaningful group.
+
+In a way, structs are similar to tuples, with the difference that you can name each piece of data in the structs.
+
+For more details, check:
+
+- [structs.rs](./snippets/05-structs/structs.rs) for basic struct definitions.
+- [structs-and-traits.rs](./snippets/05-structs/structs-and-traits.rs) for checking how to add functionality with derived traits.
+- [structs-and-methods.rs](./snippets/05-structs/structs-and-methods.rs) for methods definitions on structs.
+
+## [6. Enums and Pattern Matching](https://doc.rust-lang.org/book/ch06-00-enums.html)
+Enumerations, also referred to as enums, allow you to define a type by enumerating its possible variants.
+Enums give you a way of saying a value is one of a possible set of values.
+
+For more details, check:
+
+- [enums.rs](./snippets/06-enums/enums.rs) for basic enum definitions.
+- [option-enum.rs](./snippets/06-enums/option-enum.rs) for describing the importance of the `Option` enum.
+- [match-control-flow.rs](./snippets/06-enums/match-control-flow.rs) for describing the `match` control flow.
+- [if-let.rs](./snippets/06-enums/if-let.rs) for describing `if let` and `let...else`.
