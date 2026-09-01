@@ -351,3 +351,15 @@ For more details, check:
 
 Lastly, Rust also supports a different way for importing modules.
 Check [Alternate File Paths](https://doc.rust-lang.org/book/ch07-05-separating-modules-into-different-files.html#alternate-file-paths).
+
+## [8. Common Collections](https://doc.rust-lang.org/book/ch08-00-common-collections.html)
+Rust's standard library includes a number of very useful data structures called *collections*,
+which can contain multiple values.
+
+Unlike the built-in array and tuple types, the data that these collections point to is stored to the heap.
+
+Such collections are:
+
+* [Vectors](./snippets/08-collections/vectors.rs).
+* Strings.
+* Hash maps.
