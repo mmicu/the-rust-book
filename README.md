@@ -362,4 +362,4 @@ Such collections are:
 
 * [Vectors](./snippets/08-collections/vectors.rs).
 * [Strings](./snippets/08-collections/strings.rs).
-* Hash maps.
+* [Hash maps](./snippets/08-collections/hash-maps.rs).
