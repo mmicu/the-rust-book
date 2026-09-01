@@ -261,3 +261,93 @@ For more details, check:
 - [option-enum.rs](./snippets/06-enums/option-enum.rs) for describing the importance of the `Option` enum.
 - [match-control-flow.rs](./snippets/06-enums/match-control-flow.rs) for describing the `match` control flow.
 - [if-let.rs](./snippets/06-enums/if-let.rs) for describing `if let` and `let...else`.
+
+## [7. Packages, Crates, and Modules](https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html)
+Rust has a number of features that allow you to manage your code's organization:
+
+- *Packages*: a `Cargo` feature that lets you build, test, and share crates.
+- *Crates*: a tree of modules that produces a library or executable.
+- *Modules and use*: let you control the organization, scope, and privacy of paths.
+- *Paths*: a way of naming an item, such as a struct, function, or module.
+
+### [Packages and Crates](https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html#packages-and-crates)
+A *crate* is the **smallest amount of code** that the Rust compiler considers at a time.
+Even if you run *rustc* rather than cargo and pass a single source code file,
+the compiler considers that file to be a crate.
+Such crates can contain modules.
+
+A crate can come in one of two forms:
+
+1. A **binary crate**: programs you can compile to an executable.
+Each must have a function called `main`.
+1. A **library crate**: they do not have a `main` function,
+and they do not compile to an executable.
+Instead, they define functionality intended to be shared with multiple projects.
+
+Also, the *crate root* is a source file that the Rust compiler starts from and
+makes up the root module of your crate.
+
+On the other hand, a *package* is a bundle of **one or more crates** that provides a set of functionality.
+A package can contain as many binary crates as you like, but at most only one library crate.
+Also, it must contain at least one crate, whether that's a library or binary crate.
+
+```
+$ cargo new foo
+    Creating binary (application) `foo` package
+note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+$ ls foo
+Cargo.toml      src
+$ ls foo/src
+main.rs
+```
+
+- `src/main.rs`: binary crate.
+- `src/lib.rs`: library crate and corresponding crate root.
+
+If a package contains *src/main.rs* and *src/lib.rs*,
+it has two crates: a *binary* and a *library*, both with the same name as the package.
+A package can have multiple binary crates by placing files in the *src/bin* directory: each file will be a separate binary crate.
+
+### [Control Scope and Privacy with Modules](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html#control-scope-and-privacy-with-modules)
+
+#### [Modules Cheat Sheet](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html#modules-cheat-sheet)
+1. Start from the **crate root**. Either `src/main.rs` or `src/lib.rs`.
+1. Declaring **modules**: in the crate root file, you can declare new modules.
+If you use `mod garden`, the compiler will look:
+    1. Inline `{ ... }` instead of `;` in `mod garden`.
+    1. `src/garden.rs`.
+    1. `src/garden/mod.rs`.
+1. Declaring **submodules**: in *any file* other than the crate root,
+you can declare submodules. For example, `mod vegetables;` in `src/garden.rs`.
+The compiler will look:
+    1. Inline `{ ... }` instead of `;` in `mod vegetables`.
+    1. `src/garden/vegetables.rs`.
+    1. `src/garden/vegetables/mod.rs`.
+1. Paths to code in modules: once a module is part of your crate,
+you can refer to code in that module from anywhere else in that same crate (if privacy rules allow).
+For example: `crate::garden::vegetables::Asparagus`.
+1. Private/public: code within a module is private from its parent modules by default.
+To make a module public, declare it with `pub mod` instead of `mod`.
+1. The use keyword: within a scope, the use keyword creates shortcuts to items to reduce repetition of long paths.
+For example, to refer to `crate::garden::vegetables::Asparagus`,
+you can create a shortcut with `use crate::garden::vegetables::Asparagus;`,
+and simple use `Asparagus`.
+
+For more details, check [backyard](./snippets/07-packages-crates-modules/backyard).
+
+### [Paths for Referring to an Item in the Module Tree](https://doc.rust-lang.org/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#paths-for-referring-to-an-item-in-the-module-tree)
+To call a function, we need to know its path.
+
+A path can take two forms:
+
+* An absolute path is the full path starting from a crate root.
+* A relative path starts from the current module and uses `self`, `super`, or an identifier in the current module.
+
+For more details, check:
+
+*  [restaurant](./snippets 07-packages-crates-modules/restaurant).
+*  [restaurant](./snippets 07-packages-crates-modules/restaurant).
+*  [restaurant](./snippets 07-packages-crates-modules/restaurant).
+
+Lastly, Rust also supports a different way for importing modules.
+Check [Alternate File Paths](https://doc.rust-lang.org/book/ch07-05-separating-modules-into-different-files.html#alternate-file-paths).
