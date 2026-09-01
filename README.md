@@ -361,5 +361,5 @@ Unlike the built-in array and tuple types, the data that these collections point
 Such collections are:
 
 * [Vectors](./snippets/08-collections/vectors.rs).
-* Strings.
+* [Strings](./snippets/08-collections/strings.rs).
 * Hash maps.
