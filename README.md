@@ -345,9 +345,9 @@ A path can take two forms:
 
 For more details, check:
 
-*  [restaurant](./snippets 07-packages-crates-modules/restaurant).
-*  [restaurant](./snippets 07-packages-crates-modules/restaurant).
-*  [restaurant](./snippets 07-packages-crates-modules/restaurant).
+*  [restaurant](./snippets/07-packages-crates-modules/restaurant/).
+*  [restaurant-2](./snippets/07-packages-crates-modules/resturant-2/).
+*  [backyard](./snippets/07-packages-crates-modules/backyard/).
 
 Lastly, Rust also supports a different way for importing modules.
 Check [Alternate File Paths](https://doc.rust-lang.org/book/ch07-05-separating-modules-into-different-files.html#alternate-file-paths).
