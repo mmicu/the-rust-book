@@ -363,3 +363,187 @@ Such collections are:
 * [Vectors](./snippets/08-collections/vectors.rs).
 * [Strings](./snippets/08-collections/strings.rs).
 * [Hash maps](./snippets/08-collections/hash-maps.rs).
+
+## [9. Error Handling](https://doc.rust-lang.org/book/ch09-00-error-handling.html)
+Rust groups errors into two major categories:
+
+1. Recoverable.
+1. Unrecoverable.
+
+**Rust does not have exceptions**.
+Instead, it has the type `Result<T, E>` for recoverable errors and the `panic!` macro that
+stops execution when the program encounters an unrecoverable error.
+
+### [Unrecoverable Errors with panic!](https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html)
+There are two ways to cause a panic in practice:
+
+1. By taking an action that causes our code to panic (such as accessing an array past the end)
+1. By explicitly calling the `panic!` macro.
+
+By default, these panics will print a failure message, unwind, clean up the stack, and quit.
+Via an environment variable, you can also have Rust display the call stack when a panic occurs
+to make it easier to track down the source of the panic.
+
+You can switch from unwinding to aborting upon a panic by adding `panic = 'abort'`
+to the appropriate `[profile]` sections in your `Cargo.toml` file.
+
+```toml
+[profile.release]
+panic = 'abort'
+```
+
+For example, calling a `panic!("crash and burn");` would produce the following:
+
+```
+thread 'main' panicked at src/main.rs:2:5:
+crash and burn
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+### [Recoverable Errors with Result](https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html)
+The `Result` enum is defined as having two variants, `Ok` and `Err`, as follows:
+
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+Where:
+
+* `T` represents the type of the value that will be returned in a success case within the `Ok` variant.
+* `E` represents the type of the error that will be returned in a failure case within the `Err` variant.
+
+Let's call a function that returns a `Result` value:
+
+```rust
+use std::fs::File;
+
+fn main() {
+    let greeting_file_result = File::open("hello.txt");
+}
+```
+
+The return type of `File::open` is a `Result<T, E>`:
+
+* `T` is `std::fs::File`.
+* `E` is `std::io::Error`.
+
+```rust
+let greeting_file = match greeting_file_result {
+    Ok(file) => file,
+    Err(error) => panic!("Problem opening the file: {error:?}"),
+};
+```
+
+We could match the error to take different actions based on the type of error we have:
+
+```rust
+Err(error) => match error.kind() {
+    ErrorKind::NotFound => match File::create("hello.txt") {
+        Ok(fc) => fc,
+        Err(e) => panic!("Problem creating the file: {e:?}"),
+    },
+    _ => {
+        panic!("Problem opening the file: {error:?}");
+    }
+},
+```
+
+The enum `io::ErrorKind` is provided by the standard library and
+has variants representing the different kinds of errors that might result from an `io` operation.
+
+The code with `match` is quite verbose and if we still want to panic if the file does not exist,
+we can use the `unwrap` method.
+In particular, if the `Result` value is the:
+
+* `Ok` variant, `unwrap` will return the value inside the `Ok`.
+* `Err` variant, `unwrap` will call the `panic!` macro.
+
+```rust
+let greeting_file = File::open("hello.txt").unwrap();
+```
+
+Similarly, the `expect` method lets us also choose the `panic!` error message:
+
+```rust
+let greeting_file = File::open("hello.txt").expect("hello.txt should be included in this project");
+```
+
+In **production-quality code**, most Rustaceans choose `expect` rather than `unwrap` and
+give more context about why the operation is expected to always succeed.
+
+As we could see, handling errors could be quite verbose.
+Also, instead of handling the error within the function itself,
+you can return the error to the calling code so that it can decide what to do.
+This is known as *propagating* the error.
+
+The `?` placed after a `Result` value is defined to work in almost the same way as the `match`:
+
+* If the value of the `Result` is an `Ok`, the value inside the `Ok` will get returned.
+* If the value is an `Err`, the `Err` will be returned from the whole function.
+
+Thanks to this, we can write less verbose code.
+Let's take an example. The four snippets below are equivalent:
+
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let username_file_result = File::open("hello.txt");
+
+    let mut username_file = match username_file_result {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+
+    let mut username = String::new();
+
+    match username_file.read_to_string(&mut username) {
+        Ok(_) => Ok(username),
+        Err(e) => Err(e),
+    }
+}
+```
+
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut username_file = File::open("hello.txt")?;
+    let mut username = String::new();
+    username_file.read_to_string(&mut username)?;
+    Ok(username)
+}
+```
+
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut username = String::new();
+
+    File::open("hello.txt")?.read_to_string(&mut username)?;
+
+    Ok(username)
+}
+```
+
+```rust
+use std::fs;
+use std::io;
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    fs::read_to_string("hello.txt")
+}
+```
+
+Error values that have the `?` operator called on them go through the `from` function,
+defined in the `From` trait in the standard library,
+which is used to **convert values from one type into another**.
+When the `?` operator calls the `from` function, the error type received is
+**converted into the error type defined in the return type of the current function**.
